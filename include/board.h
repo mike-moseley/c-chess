@@ -8,7 +8,7 @@ extern int LINE_COLOR;
 
 typedef struct Cell {
 	piece_t *piece;
-	int can_move;
+	int is_occupied;
 } cell_t;
 
 typedef struct Board {

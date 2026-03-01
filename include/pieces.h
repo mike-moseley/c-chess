@@ -5,6 +5,7 @@ typedef enum piece_kind {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING} piece_kind_t;
 
 extern char *white_glyphs[6];
 extern char *black_glyphs[6];
+extern char piece_chars[6];
 
 typedef struct Vec2 {
 	int x;

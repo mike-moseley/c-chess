@@ -1,5 +1,6 @@
 #pragma once
 #include "board.h"
+#include "pieces.h"
 #include <stdlib.h>
 #include <ncurses.h>
 
@@ -7,17 +8,23 @@ int BOARD_BG_WHITE = 5;
 int BOARD_BG_BLACK = 4;
 int LINE_COLOR = 8;
 
-
 board_t *new_board(int height, int width) {
 	int size = height * width;
 	cell_t **cells = calloc(size, sizeof(cell_t *));
-	board_t *board = calloc(size, sizeof(board_t));
+	int i;
+	for (i = 0; i < size; i++) {
+		cells[i] = calloc(1, sizeof(cell_t));
+	}
+	board_t *board = calloc(1, sizeof(board_t));
 	board->cells = cells;
 	board->height = height;
 	board->width = width;
 	return board;
 }
 
+int coord_to_index(vec2_t *coord, board_t *board) {
+	return coord->x + coord->y * board->height;
+}
 void draw_board(WINDOW *window, board_t *board) {
 	// Draw outer borders
 	// TODO: replace with border when board window is implemented
@@ -75,11 +82,26 @@ void draw_board(WINDOW *window, board_t *board) {
 				// Color spaces
 				// TODO: When pieces are implemented if there is a piece on x//2,y//2
 				// put piece from board->elements[x//2,y//2]?
+				board->cells[59]->is_occupied = 1;
+				vec2_t coord = {x/2, y/2};
+				int coord_idx = coord_to_index(&coord, board);
 				if(((x%4 == 3) && (y%4 == 1)) || ((x%4 == 1) && (y%4 ==3))){
-					mvwchgat(window,y,x, 1, A_NORMAL, 2, NULL);
+					if ( board->cells[coord_idx]->is_occupied == 1 ){
+						attron(COLOR_PAIR(4));
+						mvwprintw(window, 16-1, 7, "%s",white_glyphs[5]);
+						attroff(COLOR_PAIR(4));
+					} else {
+						mvwchgat(window,y,x, 1, A_NORMAL, 1, NULL);
+					}
 				}
 				if(((x%4 == 3) && (y%4 == 3))||((x%4 == 1)&& (y%4 == 1))){
-					mvwchgat(window,y,x, 1, A_NORMAL, 1, NULL);
+					if ( board->cells[coord_idx]->is_occupied == 1 ){
+						attron(COLOR_PAIR(5));
+						mvwprintw(window, 16-1, 7, "%s",white_glyphs[5]);
+						attroff(COLOR_PAIR(5));
+					} else {
+						mvwchgat(window,y,x, 1, A_NORMAL, 2, NULL);
+					}
 				}
 			}
 		}

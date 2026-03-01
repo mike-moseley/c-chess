@@ -2,3 +2,5 @@ cmake/
 compile_commands.json
 bin/
 .cache/
+notes.md
+log.txt

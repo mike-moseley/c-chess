@@ -24,10 +24,14 @@ int main() {
 		printf("Your terminal doesn't support at least 16 colors.");
 		return 1;
 	}
-	init_pair(1,-1,BOARD_BG_WHITE);
-	init_pair(2,-1,BOARD_BG_BLACK);
-	init_pair(3, LINE_COLOR, -1);
 
+	init_pair(1,-1, BOARD_BG_WHITE);
+	init_pair(2,-1, BOARD_BG_BLACK);
+	init_pair(3, LINE_COLOR, -1);
+	init_pair(4, BOARD_BG_BLACK, BOARD_BG_WHITE);
+	init_pair(5, BOARD_BG_WHITE, BOARD_BG_BLACK);
+
+	// TODO: Make window for board and pass to draw_board
 	board_t *board = new_board(8,8);
 	draw_board(stdscr, board);
 
