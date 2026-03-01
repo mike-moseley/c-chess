@@ -26,6 +26,7 @@ int main() {
 	}
 	init_pair(1,-1,BOARD_BG_WHITE);
 	init_pair(2,-1,BOARD_BG_BLACK);
+	init_pair(3, LINE_COLOR, -1);
 
 	board_t *board = new_board(8,8);
 	draw_board(stdscr, board);

@@ -4,6 +4,7 @@
 
 extern int BOARD_BG_WHITE;
 extern int BOARD_BG_BLACK;
+extern int LINE_COLOR;
 
 typedef struct Cell {
 	piece_t *piece;
