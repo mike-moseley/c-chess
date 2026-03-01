@@ -1,1 +1,0 @@
-/usr/bin/cc -Wl,--dependency-file=CMakeFiles/c-chess.dir/link.d "CMakeFiles/c-chess.dir/src/board.c.o" "CMakeFiles/c-chess.dir/src/main.c.o" "CMakeFiles/c-chess.dir/src/pieces.c.o" -o bin/c-chess  -lncursesw
