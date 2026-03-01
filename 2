@@ -36,7 +36,7 @@ void draw_board(WINDOW *window, board_t *board) {
 	for(y=1; y<board->height*2; y++) {
 		for(x=1; x<board->width*2; x++) {
 			if((x%2 == 1)&&(y%2 == 1)){
-				mvwaddch(window,y,x, ' ');
+				mvwaddch(window,y,x,NULL);
 			}
 			if((x%2 == 0) && (y%2 == 0)){
 				mvwaddch(window,y,x,ACS_PLUS);

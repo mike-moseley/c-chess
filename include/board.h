@@ -1,5 +1,9 @@
 #pragma once
-#import "pieces.h"
+#include "pieces.h"
+#include <ncurses.h>
+
+extern int BOARD_BG_WHITE;
+extern int BOARD_BG_BLACK;
 
 typedef struct Cell {
 	piece_t *piece;
@@ -11,3 +15,6 @@ typedef struct Board {
 	int width;
 	cell_t **cells;
 } board_t;
+
+void draw_board(WINDOW *window, board_t *board);
+board_t *new_board(int height, int width);
