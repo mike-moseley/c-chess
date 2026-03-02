@@ -16,5 +16,5 @@ typedef struct Piece {
 	vec2_t *moves;
 } piece_t;
 
-extern piece_t **white_pieces;
-extern piece_t **black_pieces;
+// extern piece_t **white_pieces;
+// extern piece_t **black_pieces;

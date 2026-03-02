@@ -23,23 +23,5 @@ void free_piece(piece_t *piece) {
 	free(piece);
 }
 
-piece_t **create_pieces(board_t *board) {
-	piece_t **pieces = calloc(board->width*2, sizeof(piece_t *));
-	return pieces;
-}
-
-void init_white_pieces_classic(board_t *board, piece_t *pieces[16]) {
-	// Initialize pawns
-	int i;
-	for (i=0; i<board->width; i++) {
-		piece_t *pawn = new_piece(PAWN,WHITE,1,i,pawn_white_moves);
-		pieces[i] = pawn;
-	}
-	// Initialize knights
-	piece_t *knight = new_piece(KNIGHT, WHITE, 0, 2, knight_moves);
-	pieces[8] = knight;
-	piece_t *knight_2 = new_piece(KNIGHT, WHITE, 0, 4, knight_moves);
-	pieces[9] = knight_2;
-}
 
 
