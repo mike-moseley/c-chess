@@ -22,8 +22,19 @@ board_t *new_board(int height, int width) {
 	return board;
 }
 
-int coord_to_index(vec2_t *coord, board_t *board) {
-	return coord->x + coord->y * board->height;
+void free_board(board_t *board) {
+	cell_t  **cells = board->cells;
+	int size = board->height * board->width;
+	int i;
+	for (i = 0; i < size; i++) {
+		free(cells[i]);
+	}
+	free(cells);
+	free(board);
+}
+
+int coord_to_index(int y, int x, board_t *board) {
+	return x + y * board->height;
 }
 void draw_board(WINDOW *window, board_t *board) {
 	// Draw outer borders
@@ -83,8 +94,7 @@ void draw_board(WINDOW *window, board_t *board) {
 				// TODO: When pieces are implemented if there is a piece on x//2,y//2
 				// put piece from board->elements[x//2,y//2]?
 				board->cells[59]->is_occupied = 1;
-				vec2_t coord = {x/2, y/2};
-				int coord_idx = coord_to_index(&coord, board);
+				int coord_idx = coord_to_index(y/2, x/2, board);
 				if(((x%4 == 3) && (y%4 == 1)) || ((x%4 == 1) && (y%4 ==3))){
 					if ( board->cells[coord_idx]->is_occupied == 1 ){
 						attron(COLOR_PAIR(4));

@@ -19,3 +19,5 @@ typedef struct Board {
 
 void draw_board(WINDOW *window, board_t *board);
 board_t *new_board(int height, int width);
+void free_board(board_t *board);
+int coord_to_index(int y, int x, board_t *board);
