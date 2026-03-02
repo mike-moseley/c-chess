@@ -11,7 +11,7 @@ file(GLOB_RECURSE sources
 )
 find_package(Curses REQUIRED)
 add_executable(c-chess ${sources})
-target_link_libraries(c-chess PRIVATE ncursesw)
+target_link_libraries(c-chess PRIVATE ncurses)
 target_include_directories(c-chess PRIVATE "${CMAKE_SOURCE_DIR}/include" "${CURSES_INCLUDE_DIR}")
 target_compile_options(c-chess PRIVATE -Wall -Wextra -g)
 
@@ -42,7 +42,7 @@ target_include_directories(test_board PRIVATE
 	"${CMAKE_SOURCE_DIR}/test/unity"
 	"${CURSES_INCLUDE_DIR}"
 )
-target_link_libraries(test_board PRIVATE ncursesw)
+target_link_libraries(test_board PRIVATE ncurses)
 target_compile_options(test_board PRIVATE -Wall -Wextra -g)
 
 add_test(NAME board COMMAND test_board)
