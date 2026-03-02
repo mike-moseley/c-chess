@@ -8,7 +8,6 @@ extern int LINE_COLOR;
 
 typedef struct Cell {
 	piece_t *piece;
-	int is_occupied;
 } cell_t;
 
 typedef struct Board {
@@ -21,3 +20,6 @@ void draw_board(WINDOW *window, board_t *board);
 board_t *new_board(int height, int width);
 void free_board(board_t *board);
 int coord_to_index(int y, int x, board_t *board);
+piece_t *new_piece(piece_kind_t kind, chess_color_t color, int y, int x, vec2_t *moves);
+void init_white_pieces_classic(board_t *board, piece_t *pieces[16]);
+piece_t **create_pieces(board_t *board);

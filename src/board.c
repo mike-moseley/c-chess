@@ -36,6 +36,25 @@ void free_board(board_t *board) {
 int coord_to_index(int y, int x, board_t *board) {
 	return x + y * board->height;
 }
+
+piece_t **create_pieces(board_t *board) {
+	piece_t **pieces = calloc(board->width*2, sizeof(piece_t *));
+	return pieces;
+}
+
+void init_white_pieces_classic(board_t *board, piece_t *pieces[16]) {
+	// Initialize pawns
+	int i;
+	for (i=0; i<board->width; i++) {
+		piece_t *pawn = new_piece(PAWN,WHITE,1,i,pawn_white_moves);
+		pieces[i] = pawn;
+	}
+	// Initialize knights
+	piece_t *knight = new_piece(KNIGHT, WHITE, 0, 2, knight_moves);
+	pieces[8] = knight;
+	piece_t *knight_2 = new_piece(KNIGHT, WHITE, 0, 4, knight_moves);
+	pieces[9] = knight_2;
+}
 void draw_board(WINDOW *window, board_t *board) {
 	// Draw outer borders
 	// TODO: replace with border when board window is implemented
@@ -93,22 +112,22 @@ void draw_board(WINDOW *window, board_t *board) {
 				// Color spaces
 				// TODO: When pieces are implemented if there is a piece on x//2,y//2
 				// put piece from board->elements[x//2,y//2]?
-				board->cells[59]->is_occupied = 1;
 				int coord_idx = coord_to_index(y/2, x/2, board);
 				if(((x%4 == 3) && (y%4 == 1)) || ((x%4 == 1) && (y%4 ==3))){
-					if ( board->cells[coord_idx]->is_occupied == 1 ){
-						attron(COLOR_PAIR(4));
-						mvwprintw(window, 16-1, 7, "%s",white_glyphs[5]);
-						attroff(COLOR_PAIR(4));
+					if ( board->cells[coord_idx] != NULL ){
+						// attron(COLOR_PAIR(4));
+						// mvwprintw(window, 16-1, 7, "%s",white_glyphs[5]);
+						// attroff(COLOR_PAIR(4));
+						mvwchgat(window,y,x, 4, A_NORMAL, 1, NULL);
 					} else {
 						mvwchgat(window,y,x, 1, A_NORMAL, 1, NULL);
 					}
 				}
 				if(((x%4 == 3) && (y%4 == 3))||((x%4 == 1)&& (y%4 == 1))){
-					if ( board->cells[coord_idx]->is_occupied == 1 ){
-						attron(COLOR_PAIR(5));
-						mvwprintw(window, 16-1, 7, "%s",white_glyphs[5]);
-						attroff(COLOR_PAIR(5));
+					if ( board->cells[coord_idx] != NULL ){
+						// attron(COLOR_PAIR(5));
+						// mvwprintw(window, 16-1, 7, "%s",white_glyphs[5]);
+						// attroff(COLOR_PAIR(5));
 					} else {
 						mvwchgat(window,y,x, 1, A_NORMAL, 2, NULL);
 					}
