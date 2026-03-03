@@ -15,4 +15,4 @@ extern vec2_t bishop_moves[4];
 extern vec2_t rook_moves[4];
 extern vec2_t king_queen_moves[8];
 
-vec2_t *compute_moves(struct Board *board, struct Piece *piece, int *count);
+void compute_moves(struct Board *board, struct Piece *piece);

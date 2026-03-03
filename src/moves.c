@@ -27,10 +27,12 @@ vec2_t king_queen_moves[8] = {
 	{-1,0} ,{0,-1}
 };
 
-vec2_t *compute_moves(struct Board *board, struct Piece *piece, int *count) {
+void compute_moves(struct Board *board, struct Piece *piece) {
 	// 28 maximum number of moves
 	vec2_t *result = calloc(28, sizeof(vec2_t));
 	int i;
+	piece->moves_count = 0;
+	clear_board_moveable(board);
 
 	switch(piece->kind) {
 		case PAWN:
@@ -44,10 +46,12 @@ vec2_t *compute_moves(struct Board *board, struct Piece *piece, int *count) {
 				x = piece->x + king_queen_moves[i].x;
 				if (check_bounds(board, y, x)){
 					int idx = coord_to_index(board, y, x);
-					if ((board->cells[idx]->piece != NULL) || (board->cells[idx]->piece->color != piece->color)) {
-						result[*count].y = y;
-						result[*count].x = x;
-						(*count)++;
+					piece_t *dest = board->cells[idx]->piece;
+					if ((dest == NULL) || (dest->color != piece->color)) {
+						result[piece->moves_count].y = y;
+						result[piece->moves_count].x = x;
+						piece->moves_count++;
+						board->cells[idx]->moveable = 1;
 					}
 				}
 			}
@@ -61,10 +65,12 @@ vec2_t *compute_moves(struct Board *board, struct Piece *piece, int *count) {
 				x = piece->x + knight_moves[i].x;
 				if (check_bounds(board, y, x)){
 					int idx = coord_to_index(board, y, x);
-					if ((board->cells[idx]->piece != NULL) || (board->cells[idx]->piece->color != piece->color)) {
-						result[*count].y = y;
-						result[*count].x = x;
-						(*count)++;
+					piece_t *dest = board->cells[idx]->piece;
+					if ((dest == NULL) || (dest->color != piece->color)) {
+						result[piece->moves_count].y = y;
+						result[piece->moves_count].x = x;
+						piece->moves_count++;
+						board->cells[idx]->moveable = 1;
 					}
 				}
 			}
@@ -79,6 +85,6 @@ vec2_t *compute_moves(struct Board *board, struct Piece *piece, int *count) {
 		default:
 			break;
 	}	
-	return result;
+	piece->moves = result;
 }
 

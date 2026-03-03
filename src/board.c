@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
-int BOARD_BG_WHITE = 5;
-int BOARD_BG_BLACK = -1;
-int WHITE_COLOR = 14;
+int BOARD_BG_WHITE = -1;
+int BOARD_BG_BLACK = 3;
+int WHITE_COLOR = 12;
 int BLACK_COLOR = 4;
 int LINE_COLOR = 8;
 
@@ -17,6 +17,7 @@ board_t *new_board(int height, int width) {
 	int i;
 	for (i = 0; i < size; i++) {
 		cells[i] = calloc(1, sizeof(cell_t));
+		cells[i]->moveable = 0;
 	}
 	board_t *board = calloc(1, sizeof(board_t));
 	board->cells = cells;
@@ -34,6 +35,15 @@ void free_board(board_t *board) {
 	}
 	free(cells);
 	free(board);
+}
+
+void clear_board_moveable(board_t *board) {
+	cell_t  **cells = board->cells;
+	int size = board->height * board->width;
+	int i;
+	for (i=0; i<size; i++) {
+		cells[i]->moveable = 0;
+	}
 }
 
 int coord_to_index(board_t *board, int y, int x) {
@@ -58,7 +68,7 @@ void add_pieces_to_cells(board_t *board, piece_t *pieces[16]) {
 		board->cells[piece_idx]->piece = pieces[i];
 	}
 }
-void draw_board(WINDOW *window, board_t *board) {
+void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piece_t *selected) {
 	// Draw outer borders
 	// TODO: replace with border when board window is implemented
 	// wborder(window, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -120,6 +130,17 @@ void draw_board(WINDOW *window, board_t *board) {
 				// Color white spaces
 				if(((x%4 == 3) && (y%4 == 1)) || ((x%4 == 1) && (y%4 ==3))){
 					if ((piece != NULL) && (piece->color == WHITE)){
+						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(5)); 
+					} else if ((piece != NULL) && (piece->color == BLACK)) {
+						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(7)); 
+					} else {
+						mvwaddch(window,y,x, ' ' | COLOR_PAIR(2)); 
+					}
+				}
+
+				// Color black spaces
+				if(((x%4 == 3) && (y%4 == 3))||((x%4 == 1)&& (y%4 == 1))){
+					if ((piece != NULL) && (piece->color == WHITE)){
 						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(4)); 
 					} else if ((piece != NULL) && (piece->color == BLACK)) {
 						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(6)); 
@@ -128,17 +149,26 @@ void draw_board(WINDOW *window, board_t *board) {
 					}
 				}
 
-				// Color black spaces
-				if(((x%4 == 3) && (y%4 == 3))||((x%4 == 1)&& (y%4 == 1))){
-					if ((piece != NULL) && (piece->color == WHITE)){
-						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(5)); 
-					} else if ((piece != NULL) && (piece->color == BLACK)) {
-						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(7)); 
-					} else {
-						mvwaddch(window,y,x, ' ' | COLOR_PAIR(2)); 
+				// Draw cursor and selected square
+				if((cursor_y == y/2) && (cursor_x == x/2)) {
+					mvwchgat(window, cursor_y*2+1, cursor_x*2+1, 1, A_NORMAL, 8, NULL);
+				}
+				if(selected != NULL) {
+					if((selected->y == y/2) && selected->x == x/2) {
+						mvwchgat(window, selected->y*2+1, selected->x*2+1, 1, A_REVERSE,0, NULL);
 					}
 				}
+
 			}
+		}
+	}
+	if (selected != NULL) {
+		int i;
+		for(i=0; i<selected->moves_count; i++){
+			vec2_t moves = selected->moves[i];
+			// int idx = coord_to_index(board, selected->moves->y, selected->moves->x);
+			mvwchgat(window, moves.y*2+1, moves.x*2+1,1, A_NORMAL, 9, NULL);
+			
 		}
 	}
 }
