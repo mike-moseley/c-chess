@@ -7,6 +7,7 @@ typedef enum chess_color {WHITE, BLACK} chess_color_t;
 typedef enum piece_kind {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING} piece_kind_t;
 extern char piece_chars[6];
 
+typedef struct Board board_t;
 typedef struct Piece {
 	piece_kind_t kind;
 	chess_color_t color;
@@ -16,5 +17,9 @@ typedef struct Piece {
 	vec2_t *moves;
 } piece_t;
 
+piece_t *new_piece(piece_kind_t kind, chess_color_t color, int y, int x, vec2_t *moves);
+void init_white_pieces_classic(board_t *board, piece_t *pieces[16]);
+void init_black_pieces_classic(board_t *board, piece_t *pieces[16]);
+piece_t **create_pieces(board_t *board);
 // extern piece_t **white_pieces;
 // extern piece_t **black_pieces;

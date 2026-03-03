@@ -1,5 +1,8 @@
 #pragma once
 
+struct Board;
+struct Piece;
+
 typedef struct Vec2 {
 	int y;
 	int x;
@@ -11,3 +14,5 @@ extern vec2_t knight_moves[8];
 extern vec2_t bishop_moves[4];
 extern vec2_t rook_moves[4];
 extern vec2_t king_queen_moves[8];
+
+vec2_t *compute_moves(struct Board *board, struct Piece *piece, int *count);

@@ -40,63 +40,17 @@ int coord_to_index(board_t *board, int y, int x) {
 	return x + y * board->width;
 }
 
-piece_t **create_pieces(board_t *board) {
-	piece_t **pieces = calloc(board->width*2, sizeof(piece_t *));
-	return pieces;
+vec2_t index_to_coord(board_t *board, int idx) {
+	int x = idx % board->height;
+	int y = (idx - x) / board->height;
+	vec2_t coord = {y, x};
+	return coord;
 }
 
-void init_white_pieces_classic(board_t *board, piece_t *pieces[16]) {
-	// Initialize pawns
-	int i;
-	for (i=0; i<board->width; i++) {
-		piece_t *pawn = new_piece(PAWN,WHITE,6,i,pawn_white_moves);
-		pieces[i] = pawn;
-	}
-	// Initialize knights
-	piece_t *knight = new_piece(KNIGHT, WHITE, 7, 2, knight_moves);
-	pieces[8] = knight;
-	piece_t *knight_2 = new_piece(KNIGHT, WHITE, 7, 5, knight_moves);
-	pieces[9] = knight_2;
-	// Initialize bishops
-	piece_t *bishop = new_piece(BISHOP, WHITE, 7, 1, bishop_moves);
-	pieces[10] = bishop;
-	piece_t *bishop_2 = new_piece(BISHOP, WHITE, 7, 6, bishop_moves);
-	pieces[11] = bishop_2;
-	piece_t *rook = new_piece(ROOK, WHITE, 7, 0, rook_moves);
-	pieces[12] = rook;
-	piece_t *rook_2 = new_piece(ROOK, WHITE, 7, 7, rook_moves);
-	pieces[13] = rook_2;
-	piece_t *king = new_piece(KING, WHITE, 7, 4, king_queen_moves);
-	pieces[14] = king;
-	piece_t *queen = new_piece(QUEEN, WHITE, 7, 3, king_queen_moves);
-	pieces[15] = queen;
+int check_bounds(board_t *board, int y, int x) {
+	return (y>=0) && (y<board->height) && (x>=0) && (x<board->width);
 }
-void init_black_pieces_classic(board_t *board, piece_t *pieces[16]) {
-	// Initialize pawns
-	int i;
-	for (i=0; i<board->width; i++) {
-		piece_t *pawn = new_piece(PAWN,BLACK,1,i,pawn_white_moves);
-		pieces[i] = pawn;
-	}
-	// Initialize knights
-	piece_t *knight = new_piece(KNIGHT, BLACK, 0, 2, knight_moves);
-	pieces[8] = knight;
-	piece_t *knight_2 = new_piece(KNIGHT, BLACK, 0, 5, knight_moves);
-	pieces[9] = knight_2;
-	// Initialize bishops
-	piece_t *bishop = new_piece(BISHOP, BLACK, 0, 1, bishop_moves);
-	pieces[10] = bishop;
-	piece_t *bishop_2 = new_piece(BISHOP, BLACK, 0, 6, bishop_moves);
-	pieces[11] = bishop_2;
-	piece_t *rook = new_piece(ROOK, BLACK, 0, 0, rook_moves);
-	pieces[12] = rook;
-	piece_t *rook_2 = new_piece(ROOK, BLACK, 0, 7, rook_moves);
-	pieces[13] = rook_2;
-	piece_t *king = new_piece(KING, BLACK, 0, 4, king_queen_moves);
-	pieces[14] = king;
-	piece_t *queen = new_piece(QUEEN, BLACK, 0, 3, king_queen_moves);
-	pieces[15] = queen;
-}
+
 void add_pieces_to_cells(board_t *board, piece_t *pieces[16]) {
 	int i;
 	for (i=0; i<16; i++){
@@ -159,11 +113,11 @@ void draw_board(WINDOW *window, board_t *board) {
 				if((x%2 == 1)&&(y%2 == 1)){
 					mvwaddch(window,y,x, ' ');
 				}
-				// Color spaces
-				// TODO: When pieces are implemented if there is a piece on x//2,y//2
-				// put piece from board->elements[x//2,y//2]?
 
+				// Color spaces
 				piece_t *piece = board->cells[current_idx]->piece;
+
+				// Color white spaces
 				if(((x%4 == 3) && (y%4 == 1)) || ((x%4 == 1) && (y%4 ==3))){
 					if ((piece != NULL) && (piece->color == WHITE)){
 						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(4)); 
@@ -173,6 +127,8 @@ void draw_board(WINDOW *window, board_t *board) {
 						mvwaddch(window,y,x, ' ' | COLOR_PAIR(1)); 
 					}
 				}
+
+				// Color black spaces
 				if(((x%4 == 3) && (y%4 == 3))||((x%4 == 1)&& (y%4 == 1))){
 					if ((piece != NULL) && (piece->color == WHITE)){
 						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(5)); 

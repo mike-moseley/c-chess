@@ -25,13 +25,13 @@ int main() {
 		return 1;
 	}
 
-	init_pair(1,-1, BOARD_BG_WHITE);
-	init_pair(2,-1, BOARD_BG_BLACK);
-	init_pair(3, LINE_COLOR, -1);
-	init_pair(4, WHITE_COLOR, BOARD_BG_WHITE);
-	init_pair(5, WHITE_COLOR, BOARD_BG_BLACK);
-	init_pair(6, BLACK_COLOR, BOARD_BG_WHITE);
-	init_pair(7, BLACK_COLOR, BOARD_BG_BLACK);
+	init_pair(1,-1, BOARD_BG_WHITE);				// White space
+	init_pair(2,-1, BOARD_BG_BLACK);				// Black space
+	init_pair(3, LINE_COLOR, -1);					// Border lines
+	init_pair(4, WHITE_COLOR, BOARD_BG_WHITE);		// White on white space
+	init_pair(5, WHITE_COLOR, BOARD_BG_BLACK);		// White on black space
+	init_pair(6, BLACK_COLOR, BOARD_BG_WHITE);		// Black on white space
+	init_pair(7, BLACK_COLOR, BOARD_BG_BLACK);		// Black on black space
 
 	// TODO: Make window for board and pass to draw_board
 	board_t *board = new_board(8,8);
@@ -39,6 +39,8 @@ int main() {
 	init_white_pieces_classic(board, white_pieces);
 	piece_t **black_pieces = create_pieces(board);
 	init_black_pieces_classic(board, black_pieces);
+	piece_t **white_captures = create_pieces(board);
+	piece_t **black_captures = create_pieces(board);
 	add_pieces_to_cells(board, white_pieces);
 	add_pieces_to_cells(board, black_pieces);
 	draw_board(stdscr, board);
