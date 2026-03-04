@@ -1,6 +1,5 @@
 #include "pieces.h"
 #include "board.h"
-#include "moves.h"
 #include <stdlib.h>
 
 char piece_chars[6] = {'p','N','B','R','Q','K'};
@@ -86,57 +85,61 @@ char *piece_to_string(piece_t *piece) {
 	}
 	return piece_string;
 }
+char *piece_arr_to_string(piece_t **pieces, int count) {
+	char *str = calloc(count+1, sizeof(char));
+	int i;
+	for (i=0;i<count;i++) {
+		str[i] = pieces[i]->symbol;
+	}
+	str[i++] = '\0';
+	return str;
+}
 
 void init_white_pieces_classic(board_t *board, piece_t **pieces) {
+	/*
 	// Initialize pawns
+	*/ 
 	int i;
 	for (i=0; i<board->width; i++) {
 		piece_t *pawn = new_piece(PAWN,WHITE,6,i);
 		pieces[i] = pawn;
 	}
+	/*
 	// Initialize knights
-	piece_t *knight = new_piece(KNIGHT, WHITE, 7, 2);
-	pieces[8] = knight;
-	piece_t *knight_2 = new_piece(KNIGHT, WHITE, 7, 5);
-	pieces[9] = knight_2;
+	*/ 
+	pieces[8] = new_piece(KNIGHT, WHITE, 7, 2);
+	pieces[9] = new_piece(KNIGHT, WHITE, 7, 5);
+	/*
 	// Initialize bishops
-	piece_t *bishop = new_piece(BISHOP, WHITE, 7, 1);
-	pieces[10] = bishop;
-	piece_t *bishop_2 = new_piece(BISHOP, WHITE, 7, 6);
-	pieces[11] = bishop_2;
-	piece_t *rook = new_piece(ROOK, WHITE, 7, 0);
-	pieces[12] = rook;
-	piece_t *rook_2 = new_piece(ROOK, WHITE, 7, 7);
-	pieces[13] = rook_2;
-	piece_t *king = new_piece(KING, WHITE, 7, 4);
-	pieces[14] = king;
-	piece_t *queen = new_piece(QUEEN, WHITE, 7, 3);
-	pieces[15] = queen;
+	*/ 
+	pieces[10] = new_piece(BISHOP, WHITE, 7, 1);
+	pieces[11]= new_piece(BISHOP, WHITE, 7, 6);
+	pieces[12] = new_piece(ROOK, WHITE, 7, 0);
+	pieces[13] = new_piece(ROOK, WHITE, 7, 7);
+	pieces[14] = new_piece(KING, WHITE, 7, 4);
+	pieces[15] = new_piece(QUEEN, WHITE, 7, 3);
 }
 
 void init_black_pieces_classic(board_t *board, piece_t **pieces) {
+	/*
 	// Initialize pawns
+	*/
 	int i;
 	for (i=0; i<board->width; i++) {
-		piece_t *pawn = new_piece(PAWN,BLACK,1,i);
-		pieces[i] = pawn;
+		pieces[i] = new_piece(PAWN,BLACK,1,i);
 	}
+	/*
 	// Initialize knights
-	piece_t *knight = new_piece(KNIGHT, BLACK, 0, 2);
-	pieces[8] = knight;
-	piece_t *knight_2 = new_piece(KNIGHT, BLACK, 0, 5);
-	pieces[9] = knight_2;
+	*/ 
+	pieces[8] = new_piece(KNIGHT, BLACK, 0, 2);
+	pieces[9] = new_piece(KNIGHT, BLACK, 0, 5);
+	/*
 	// Initialize bishops
-	piece_t *bishop = new_piece(BISHOP, BLACK, 0, 1);
-	pieces[10] = bishop;
-	piece_t *bishop_2 = new_piece(BISHOP, BLACK, 0, 6);
-	pieces[11] = bishop_2;
-	piece_t *rook = new_piece(ROOK, BLACK, 0, 0);
-	pieces[12] = rook;
-	piece_t *rook_2 = new_piece(ROOK, BLACK, 0, 7);
-	pieces[13] = rook_2;
-	piece_t *king = new_piece(KING, BLACK, 0, 4);
-	pieces[14] = king;
-	piece_t *queen = new_piece(QUEEN, BLACK, 0, 3);
-	pieces[15] = queen;
+	*/
+	pieces[10] = new_piece(BISHOP, BLACK, 0, 1);
+	pieces[11] = new_piece(BISHOP, BLACK, 0, 6);
+	pieces[12] = new_piece(ROOK, BLACK, 0, 0);
+	pieces[13] = new_piece(ROOK, BLACK, 0, 7);
+	pieces[14] = new_piece(KING, BLACK, 0, 4);
+	pieces[15] = new_piece(QUEEN, BLACK, 0, 3);
 }

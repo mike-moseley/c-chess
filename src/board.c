@@ -12,14 +12,16 @@ int BLACK_COLOR = 4;
 int LINE_COLOR = 8;
 
 board_t *new_board(int height, int width) {
-	int size = height * width;
-	cell_t **cells = calloc(size, sizeof(cell_t *));
-	int i;
+	int i,size;
+	cell_t **cells;
+	board_t *board;
+	size = height * width;
+	cells = calloc(size, sizeof(cell_t *));
 	for (i = 0; i < size; i++) {
 		cells[i] = calloc(1, sizeof(cell_t));
 		cells[i]->moveable = 0;
 	}
-	board_t *board = calloc(1, sizeof(board_t));
+	board = calloc(1, sizeof(board_t));
 	board->cells = cells;
 	board->height = height;
 	board->width = width;
@@ -50,10 +52,10 @@ int coord_to_index(board_t *board, int y, int x) {
 	return x + y * board->width;
 }
 
-vec2_t index_to_coord(board_t *board, int idx) {
-	int x = idx % board->height;
-	int y = (idx - x) / board->height;
-	vec2_t coord = {y, x};
+vec2_t *index_to_coord(board_t *board, int idx) {
+	vec2_t *coord = calloc(1,sizeof(vec2_t));
+	coord -> x = idx % board->height;
+	coord -> y = (idx - coord->x) / board->height;
 	return coord;
 }
 
@@ -69,9 +71,15 @@ void add_pieces_to_cells(board_t *board, piece_t *pieces[16]) {
 	}
 }
 void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piece_t *selected) {
+	/*
 	// Draw outer borders
 	// TODO: replace with border when board window is implemented
-	// wborder(window, 0, 0, 0, 0, 0, 0, 0, 0);
+	// wborder(window, 0, 0, 0, 0, 0, 0, 0
+	*/ 
+	int y;
+	int x;
+	piece_t *piece;
+	
 	attron(COLOR_PAIR(3));
 	mvwhline(window,0,0,ACS_HLINE,board->width*2);
 	mvwhline(window,board->height*2,1,ACS_HLINE,board->width*2);
@@ -84,12 +92,11 @@ void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piec
 	mvwaddch(window,board->height*2,board->width*2,ACS_LRCORNER);
 	attroff(COLOR_PAIR(3));
 
-	int y,x;
-	
 	for(y=0; y<=board->height*2; y++) {
 		for(x=0; x<=board->width*2; x++) {
-			
+			/*
 			// Cells where lines meet edges
+			*/ 
 			attron(COLOR_PAIR(3));
 			if((y == 0) && (x%2 == 0) && (x != 0) && (x!=board->width*2)) {
 				mvwaddch(window, y, x, ACS_TTEE);
@@ -106,28 +113,40 @@ void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piec
 
 			if ((y != 0) && (x!=0) && (y!=board->height*2) && (x!=board->width*2)){
 				int current_idx = coord_to_index(board, y/2, x/2);
+				/*
 				// Cells where lines cross
+				*/ 
 				if((x%2 == 0) && (y%2 == 0)){
 					mvwaddch(window,y,x,ACS_PLUS);
 				}
+				/*
 				// Vertical lines
+				*/ 
 				if(y%2 == 1){
 					mvwaddch(window,y,x,ACS_VLINE);
 				}
-				// Horizontal lines
+				/*
+			 	// Horizontal lines
+				*/
 				if(x%2 == 1){
 					mvwaddch(window,y,x,ACS_HLINE);
 				}
 				attroff(COLOR_PAIR(3));
+				/*
 				// Every space
+				*/ 
 				if((x%2 == 1)&&(y%2 == 1)){
 					mvwaddch(window,y,x, ' ');
 				}
 
+				/*
 				// Color spaces
-				piece_t *piece = board->cells[current_idx]->piece;
+				*/ 
+				piece = board->cells[current_idx]->piece;
 
+				/*
 				// Color white spaces
+				*/ 
 				if(((x%4 == 3) && (y%4 == 1)) || ((x%4 == 1) && (y%4 ==3))){
 					if ((piece != NULL) && (piece->color == WHITE)){
 						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(5)); 
@@ -138,7 +157,9 @@ void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piec
 					}
 				}
 
+				/*
 				// Color black spaces
+				*/ 
 				if(((x%4 == 3) && (y%4 == 3))||((x%4 == 1)&& (y%4 == 1))){
 					if ((piece != NULL) && (piece->color == WHITE)){
 						mvwaddch(window,y,x, piece->symbol | COLOR_PAIR(4)); 
@@ -149,7 +170,9 @@ void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piec
 					}
 				}
 
+				/*
 				// Draw cursor and selected square
+				*/ 
 				if((cursor_y == y/2) && (cursor_x == x/2)) {
 					mvwchgat(window, cursor_y*2+1, cursor_x*2+1, 1, A_NORMAL, 8, NULL);
 				}
@@ -166,7 +189,6 @@ void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piec
 		int i;
 		for(i=0; i<selected->moves_count; i++){
 			vec2_t moves = selected->moves[i];
-			// int idx = coord_to_index(board, selected->moves->y, selected->moves->x);
 			if ((moves.y == cursor_y) && (moves.x == cursor_x)) {
 				mvwchgat(window, moves.y*2+1, moves.x*2+1,1, A_NORMAL, 8, NULL);
 			} else {

@@ -4,7 +4,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <math.h>
 
 vec2_t pawn_white_moves[3] = {{1,0},{1,-1},{1,1}};
 vec2_t pawn_black_moves[3] = {{-1,0},{-1,-1},{-1,1}};
@@ -33,14 +32,19 @@ vec2_t get_closest_move_up(struct Piece *piece, int y, int x) {
 	int closest_idx = -1;
 	int closest = INT_MAX;
 	int second_closest = INT_MAX;
+	vec2_t *move = calloc(1, sizeof(vec2_t));
+	vec2_t *closest_vec = calloc(1, sizeof(vec2_t));
+	vec2_t *def = calloc(1, sizeof(vec2_t));
 
 	int i;
 	for(i=0; i<piece->moves_count; i++){
-		vec2_t move = piece->moves[i];
-		if (move.y < y) {
-			int dist_y = move.y - y;
+		*move = piece->moves[i];
+		if (move->y < y) {
+			int dist_y = move->y - y;
+			/*
 			// abs because we don't care about direction here
-			int abs_dist_x = abs(move.x - x); 
+			*/
+			int abs_dist_x = abs(move->x - x); 
 			
 			if ((dist_y < closest) || ((dist_y == closest) && abs_dist_x < second_closest)) {
 				closest = dist_y;
@@ -50,25 +54,29 @@ vec2_t get_closest_move_up(struct Piece *piece, int y, int x) {
 		}
 	}
 	if (closest_idx != -1) {
-		vec2_t closest_vec = {piece->moves[closest_idx].y,piece->moves[closest_idx].x};
-		return closest_vec;
+		closest_vec->y = piece->moves[closest_idx].y;
+		closest_vec->x= piece->moves[closest_idx].x;
+		return *closest_vec;
 	}
-	vec2_t def = {y,x};
-	return def;
+	def->y = y;
+	def->x = x;
+	return *def;
 }
 
 vec2_t get_closest_move_down(struct Piece *piece, int y, int x) {
 	int closest_idx = -1;
 	int closest = INT_MAX;
 	int second_closest = INT_MAX;
+	vec2_t *move = calloc(1, sizeof(vec2_t));
+	vec2_t *closest_vec = calloc(1, sizeof(vec2_t));
+	vec2_t *def = calloc(1, sizeof(vec2_t));
 
 	int i;
 	for(i=0; i<piece->moves_count; i++){
-		vec2_t move = piece->moves[i];
-		if (move.y > y) {
-			int dist_y = move.y - y;
-			// abs because we don't care about direction here
-			int abs_dist_x = abs(move.x - x); 
+		*move = piece->moves[i];
+		if (move->y > y) {
+			int dist_y = move->y - y;
+			int abs_dist_x = abs(move->x - x); 
 			
 			if ((dist_y < closest) || ((dist_y == closest) && abs_dist_x < second_closest)) {
 				closest = dist_y;
@@ -78,25 +86,29 @@ vec2_t get_closest_move_down(struct Piece *piece, int y, int x) {
 		}
 	}
 	if (closest_idx != -1) {
-		vec2_t closest_vec = {piece->moves[closest_idx].y,piece->moves[closest_idx].x};
-		return closest_vec;
+		closest_vec->y = piece->moves[closest_idx].y;
+		closest_vec->x = piece->moves[closest_idx].x;
+		return *closest_vec;
 	}
-	vec2_t def = {y,x};
-	return def;
+	def->y = y;
+	def->x = x;
+	return *def;
 }
 
 vec2_t get_closest_move_left(struct Piece *piece, int y, int x) {
 	int closest_idx = -1;
 	int closest = INT_MAX;
 	int second_closest = INT_MAX;
+	vec2_t *move = calloc(1, sizeof(vec2_t));
+	vec2_t *closest_vec = calloc(1, sizeof(vec2_t));
+	vec2_t *def = calloc(1, sizeof(vec2_t));
 
 	int i;
 	for(i=0; i<piece->moves_count; i++){
-		vec2_t move = piece->moves[i];
-		if (move.x < x) {
-			int dist_x = move.x - x;
-			// abs because we don't care about direction here
-			int abs_dist_y = abs(move.y - y); 
+		move = &piece->moves[i];
+		if (move->x < x) {
+			int dist_x = move->x - x;
+			int abs_dist_y = abs(move->y - y); 
 			
 			if ((dist_x < closest) || ((dist_x == closest) && abs_dist_y < second_closest)) {
 				closest = dist_x;
@@ -106,25 +118,29 @@ vec2_t get_closest_move_left(struct Piece *piece, int y, int x) {
 		}
 	}
 	if (closest_idx != -1) {
-		vec2_t closest_vec = {piece->moves[closest_idx].y,piece->moves[closest_idx].x};
-		return closest_vec;
+		closest_vec->y = piece->moves[closest_idx].y;
+		closest_vec->x = piece->moves[closest_idx].x;
+		return *closest_vec;
 	}
-	vec2_t def = {y,x};
-	return def;
+	def->y = y;
+	def->x = x;
+	return *def;
 }
 
 vec2_t get_closest_move_right(struct Piece *piece, int y, int x) {
 	int closest_idx = -1;
 	int closest = INT_MAX;
 	int second_closest = INT_MAX;
+	vec2_t *move = calloc(1, sizeof(vec2_t));
+	vec2_t *closest_vec = calloc(1, sizeof(vec2_t));
+	vec2_t *def = calloc(1, sizeof(vec2_t));
 
 	int i;
 	for(i=0; i<piece->moves_count; i++){
-		vec2_t move = piece->moves[i];
-		if (move.x > x) {
-			int dist_x = move.x - x;
-			// abs because we don't care about direction here
-			int abs_dist_y = abs(move.y - y); 
+		move = &piece->moves[i];
+		if (move->x > x) {
+			int dist_x = move->x - x;
+			int abs_dist_y = abs(move->y - y); 
 			
 			if ((dist_x < closest) || ((dist_x == closest) && abs_dist_y < second_closest)) {
 				closest = dist_x;
@@ -134,22 +150,26 @@ vec2_t get_closest_move_right(struct Piece *piece, int y, int x) {
 		}
 	}
 	if (closest_idx != -1) {
-		vec2_t closest_vec = {piece->moves[closest_idx].y,piece->moves[closest_idx].x};
-		return closest_vec;
+		closest_vec-> y = piece->moves[closest_idx].y;
+		closest_vec->x = piece->moves[closest_idx].x;
+		return *closest_vec;
 	}
-	vec2_t def = {y,x};
-	return def;
+	def->y = y;
+	def->x = x;
+	return *def;
 }
 
 void compute_moves(struct Board *board, struct Piece *piece) {
+	/*
 	// 28 maximum number of moves
+	*/ 
 	vec2_t *result = calloc(28, sizeof(vec2_t));
 	int i;
 	piece->moves_count = 0;
 
 	switch(piece->kind) {
 		case PAWN:
-		// TODO:
+		/* TODO: */
 		break;
 		case KING: {
 			int y;
@@ -190,11 +210,11 @@ void compute_moves(struct Board *board, struct Piece *piece) {
 			break;
 		}
 		case BISHOP:
-		// TODO:
+		/* TODO:*/
 		case ROOK:
-		// TODO:
+		/* TODO:*/
 		case QUEEN:
-		// TODO:
+		/* TODO:*/
 		default:
 			break;
 	}	
