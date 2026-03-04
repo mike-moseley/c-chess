@@ -1,8 +1,10 @@
+#include "moves.h"
 #include "pieces.h"
 #include "board.h"
 #include <stdio.h>
 #include <ncurses.h>
 #include <locale.h>
+#include <stdlib.h>
 
 int main() {
 	setlocale(LC_ALL, "");
@@ -57,15 +59,35 @@ int main() {
 
 	// TODO: Now just defining selection by moving cursor.
 	// Add select by typing square name (e4) in future.
+	// Make it so moving the cursor after selecting a piece only cycles
+	// over moveable
 	refresh();
 	int ch;
 	while ((ch = getch()) != 'q') {
+		// int i;
+		// int *idx_array;
+		// if (selected != NULL){
+		// 	idx_array = calloc(selected->moves_count, sizeof(int *));
+		// 	for (i=0; i < selected->moves_count; i++) {
+		// 		idx_array[i] = coord_to_index(board, selected->moves[i].y, selected->moves[i].x);
+		// 	}
+		// }
+		// if (selected == NULL) {
+		// 	free(idx_array);
+		// }
 		switch (ch) {
 			case KEY_UP:
 			case 'k':
 				tmp_y = cursor_y - 1;
 				if (check_bounds(board, tmp_y, cursor_x)) {
+					if (selected != NULL) {
+						// It works kind of
+						vec2_t closest = get_closest_move_up(selected, cursor_y, cursor_x);
+						cursor_x = closest.x;
+						cursor_y = closest.y;
+					} else {
 					cursor_y = tmp_y;
+					}
 				}
 				break;
 			case KEY_DOWN:
@@ -102,6 +124,9 @@ int main() {
 						int selected_x = selected->x;
 						int selected_idx = coord_to_index(board, selected_y, selected_x);
 						// TODO: Implement capture if board->cells[idx]->piece != NULL
+						// if (board->cells[idx]->piece != NULL){
+						//
+						// }
 						board->cells[idx]->piece = selected;
 						board->cells[idx]->piece->y = cursor_y;
 						board->cells[idx]->piece->x = cursor_x;

@@ -3,6 +3,7 @@
 #include "pieces.h"
 #include <ncurses.h>
 #include <stdlib.h>
+#include <limits.h>
 
 vec2_t pawn_white_moves[3] = {{1,0},{1,-1},{1,1}};
 vec2_t pawn_black_moves[3] = {{-1,0},{-1,-1},{-1,1}};
@@ -26,13 +27,35 @@ vec2_t king_queen_moves[8] = {
 	{1,0}  ,{0,1},
 	{-1,0} ,{0,-1}
 };
+vec2_t get_closest_move_up(struct Piece *piece, int y, int x) {
+	int closest_idx = -1;
+	int closest = INT_MAX;
+
+	int i;
+	for(i=0; i<piece->moves_count; i++){
+		vec2_t move = piece->moves[i];
+		if (move.y < y) {
+			int dist = y - move.y;
+			
+			if (dist < closest) {
+				closest = dist;
+				closest_idx = i;
+			}
+		}
+	}
+	if (closest_idx != -1) {
+		vec2_t closest_vec = {piece->moves[closest_idx].y,piece->moves[closest_idx].x};
+		return closest_vec;
+	}
+	vec2_t def = {y,x};
+	return def;
+}
 
 void compute_moves(struct Board *board, struct Piece *piece) {
 	// 28 maximum number of moves
 	vec2_t *result = calloc(28, sizeof(vec2_t));
 	int i;
 	piece->moves_count = 0;
-	clear_board_moveable(board);
 
 	switch(piece->kind) {
 		case PAWN:

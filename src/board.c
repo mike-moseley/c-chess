@@ -167,7 +167,11 @@ void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piec
 		for(i=0; i<selected->moves_count; i++){
 			vec2_t moves = selected->moves[i];
 			// int idx = coord_to_index(board, selected->moves->y, selected->moves->x);
-			mvwchgat(window, moves.y*2+1, moves.x*2+1,1, A_NORMAL, 9, NULL);
+			if ((moves.y == cursor_y) && (moves.x == cursor_x)) {
+				mvwchgat(window, moves.y*2+1, moves.x*2+1,1, A_NORMAL, 8, NULL);
+			} else {
+				mvwchgat(window, moves.y*2+1, moves.x*2+1,1, A_NORMAL, 9, NULL);
+			}
 			
 		}
 	}

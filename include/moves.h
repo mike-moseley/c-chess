@@ -16,3 +16,4 @@ extern vec2_t rook_moves[4];
 extern vec2_t king_queen_moves[8];
 
 void compute_moves(struct Board *board, struct Piece *piece);
+vec2_t get_closest_move_up(struct Piece *piece, int y, int x);
