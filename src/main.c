@@ -94,21 +94,44 @@ int main() {
 			case 'j':
 				tmp_y = cursor_y + 1;
 				if (check_bounds(board, tmp_y, cursor_x)) {
+					if (selected != NULL) {
+						// It works kind of
+						vec2_t closest = get_closest_move_down(selected, cursor_y, cursor_x);
+						cursor_x = closest.x;
+						cursor_y = closest.y;
+					} else {
 					cursor_y = tmp_y;
+					}
 				}
 				break;
 			case KEY_LEFT:
 			case 'h':
 				tmp_x = cursor_x - 1;
 				if (check_bounds(board, cursor_y, tmp_x)) {
+					if (selected != NULL) {
+						// It works kind of
+						// TODO: Replace with distance function inside get_closest_move... fns
+						// to get better movement?
+						vec2_t closest = get_closest_move_left(selected, cursor_y, cursor_x);
+						cursor_x = closest.x;
+						cursor_y = closest.y;
+					} else {
 					cursor_x = tmp_x;
+					}
 				}
 				break;
 			case KEY_RIGHT:
 			case 'l':
 				tmp_x = cursor_x + 1;
 				if (check_bounds(board, cursor_y, tmp_x)) {
+					if (selected != NULL) {
+						// It works kind of
+						vec2_t closest = get_closest_move_right(selected, cursor_y, cursor_x);
+						cursor_x = closest.x;
+						cursor_y = closest.y;
+					} else {
 					cursor_x = tmp_x;
+					}
 				}
 				break;
 			case '\n':{
