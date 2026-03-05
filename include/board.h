@@ -9,22 +9,25 @@ extern int WHITE_COLOR;
 extern int BLACK_COLOR;
 extern int LINE_COLOR;
 
-typedef struct Cell {
+typedef struct Cell
+{
 	struct Piece *piece;
 	int moveable;
 } cell_t;
 
-typedef struct Board {
+typedef struct Board
+{
 	int height;
 	int width;
 	cell_t **cells;
 } board_t;
 
-void draw_board(WINDOW *window, board_t *board, int cursor_y, int cursor_x, piece_t *selected);
-board_t *new_board(int height, int width);
-void free_board(board_t *board);
-void clear_board_moveable(board_t *board);
-int coord_to_index(board_t *board, int y, int x);
-vec2_t *index_to_coord(board_t *board, int idx);
-void add_pieces_to_cells(board_t *board, struct Piece *pieces[16]);
-int check_bounds(board_t *board, int y, int x);
+void draw_board (WINDOW *window, board_t *board, int cursor_y, int cursor_x,
+				 piece_t *selected);
+board_t *new_board (int height, int width);
+void free_board (board_t *board);
+void clear_board_moveable (board_t *board);
+int coord_to_index (board_t *board, int y, int x);
+vec2_t *index_to_coord (board_t *board, int idx);
+void add_pieces_to_cells (board_t *board, struct Piece *pieces[16]);
+int check_bounds (board_t *board, int y, int x);

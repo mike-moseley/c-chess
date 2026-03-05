@@ -3,7 +3,8 @@
 struct Board;
 struct Piece;
 
-typedef struct Vec2 {
+typedef struct Vec2
+{
 	int y;
 	int x;
 } vec2_t;
@@ -15,8 +16,8 @@ extern vec2_t bishop_moves[4];
 extern vec2_t rook_moves[4];
 extern vec2_t king_queen_moves[8];
 
-void compute_moves(struct Board *board, struct Piece *piece);
-vec2_t get_closest_move_up(struct Piece *piece, int y, int x);
-vec2_t get_closest_move_down(struct Piece *piece, int y, int x);
-vec2_t get_closest_move_left(struct Piece *piece, int y, int x);
-vec2_t get_closest_move_right(struct Piece *piece, int y, int x);
+void compute_moves (struct Board *board, struct Piece *piece);
+vec2_t get_closest_move_up (struct Piece *piece, int y, int x);
+vec2_t get_closest_move_down (struct Piece *piece, int y, int x);
+vec2_t get_closest_move_left (struct Piece *piece, int y, int x);
+vec2_t get_closest_move_right (struct Piece *piece, int y, int x);
