@@ -5,8 +5,12 @@
 #include <ncurses.h>
 #include <stdlib.h>
 
-vec2_t pawn_white_moves[3] = { { 1, 0 }, { 1, -1 }, { 1, 1 } };
-vec2_t pawn_black_moves[3] = { { -1, 0 }, { -1, -1 }, { -1, 1 } };
+vec2_t pawn_white_move[1] = { { -1, 0 } };
+vec2_t pawn_white_double_move[1] = { { -2, 0 } };
+vec2_t pawn_white_captures[3] = { { -1, -1 }, { -1, 1 } };
+vec2_t pawn_black_move[1] = { { 1, 0 } };
+vec2_t pawn_black_double_move[1] = { { 2, 0 } };
+vec2_t pawn_black_captures[3] = { { 1, -1 }, { 1, 1 } };
 vec2_t knight_moves[8] = { { 2, 1 },  { 1, 2 },	 { -2, 1 },	 { 1, -2 },
 						   { 2, -1 }, { -1, 2 }, { -2, -1 }, { -1, -2 } };
 vec2_t bishop_moves[4] = { { 1, 1 }, { -1, -1 }, { 1, -1 }, { -1, 1 } };
@@ -198,6 +202,59 @@ compute_moves (struct Board *board, struct Piece *piece)
 				int i;
 				int y;
 				int x;
+				int idx;
+
+				idx = coord_to_index (board, piece->y, piece->x);
+				if (piece->color == WHITE)
+					{
+						/* Starting row logic */
+						vec2_t move1;
+						vec2_t move2;
+						int move1_idx = 0;
+						int move2_idx = 0;
+						cell_t *move_1_cell;
+						cell_t *move_2_cell;
+						move1.y = piece->y - 1;
+						move1.x = piece->x;
+						move_1_cell = board->cells[move1_idx];
+						move2.y = piece->y - 2;
+						move2.x = piece->x;
+						move_2_cell = board->cells[move2_idx];
+						{
+							if (check_bounds (board, move1.y, move1.x)
+								&& move_1_cell->piece == NULL)
+								{
+									move1_idx = coord_to_index (board, move1.y,
+																move1.x);
+									result[piece->moves_count] = move1;
+									piece->moves_count++;
+									board->cells[move1_idx]->moveable = 1;
+
+									if (piece->y == 6)
+										{
+											if (check_bounds (board, move2.y,
+															  move2.x)
+												&& move_2_cell->piece == NULL)
+												{
+													move2_idx
+														= coord_to_index (
+															board, move2.y,
+															move2.x);
+													board->cells[move2_idx]
+														->moveable
+														= 1;
+													result[piece->moves_count]
+														= move2;
+													piece->moves_count++;
+												}
+										}
+								}
+						}
+					}
+				if (piece->color == BLACK)
+					{
+					}
+
 				break;
 			}
 		case KING:
@@ -223,8 +280,8 @@ compute_moves (struct Board *board, struct Piece *piece)
 									}
 							}
 					}
-				break;
 			}
+			break;
 		case KNIGHT:
 			{
 				int i;
