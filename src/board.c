@@ -20,10 +20,10 @@ new_board (int height, int width)
 	size = height * width;
 	cells = calloc (size, sizeof (cell_t *));
 	for (i = 0; i < size; i++)
-		{
-			cells[i] = calloc (1, sizeof (cell_t));
-			cells[i]->moveable = 0;
-		}
+	{
+		cells[i] = calloc (1, sizeof (cell_t));
+		cells[i]->moveable = 0;
+	}
 	board = calloc (1, sizeof (board_t));
 	board->cells = cells;
 	board->height = height;
@@ -38,9 +38,9 @@ free_board (board_t *board)
 	int size = board->height * board->width;
 	int i;
 	for (i = 0; i < size; i++)
-		{
-			free (cells[i]);
-		}
+	{
+		free (cells[i]);
+	}
 	free (cells);
 	free (board);
 }
@@ -52,9 +52,9 @@ clear_board_moveable (board_t *board)
 	int size = board->height * board->width;
 	int i;
 	for (i = 0; i < size; i++)
-		{
-			cells[i]->moveable = 0;
-		}
+	{
+		cells[i]->moveable = 0;
+	}
 }
 
 int
@@ -83,10 +83,10 @@ add_pieces_to_cells (board_t *board, piece_t *pieces[16])
 {
 	int i;
 	for (i = 0; i < 16; i++)
-		{
-			int piece_idx = coord_to_index (board, pieces[i]->y, pieces[i]->x);
-			board->cells[piece_idx]->piece = pieces[i];
-		}
+	{
+		int piece_idx = coord_to_index (board, pieces[i]->y, pieces[i]->x);
+		board->cells[piece_idx]->piece = pieces[i];
+	}
 }
 void
 draw_board (WINDOW *window, board_t *board, int cursor_y, int cursor_x,
@@ -114,167 +114,152 @@ draw_board (WINDOW *window, board_t *board, int cursor_y, int cursor_x,
 	attroff (COLOR_PAIR (3));
 
 	for (y = 0; y <= board->height * 2; y++)
+	{
+		for (x = 0; x <= board->width * 2; x++)
 		{
-			for (x = 0; x <= board->width * 2; x++)
+			/*
+			// Cells where lines meet edges
+			*/
+			attron (COLOR_PAIR (3));
+			if ((y == 0) && (x % 2 == 0) && (x != 0)
+				&& (x != board->width * 2))
+			{
+				mvwaddch (window, y, x, ACS_TTEE);
+			}
+			if ((y == board->height * 2) && (x % 2 == 0) && (x != 0)
+				&& (x != board->width * 2))
+			{
+				mvwaddch (window, y, x, ACS_BTEE);
+			}
+			if ((x == 0) && (y % 2 == 0) && (y != 0)
+				&& (y != board->height * 2))
+			{
+				mvwaddch (window, y, x, ACS_LTEE);
+			}
+			if ((x == board->width * 2) && (y % 2 == 0) && (y != 0)
+				&& (y != board->height * 2))
+			{
+				mvwaddch (window, y, x, ACS_RTEE);
+			}
+
+			if ((y != 0) && (x != 0) && (y != board->height * 2)
+				&& (x != board->width * 2))
+			{
+				int current_idx = coord_to_index (board, y / 2, x / 2);
+				/*
+				// Cells where lines cross
+				*/
+				if ((x % 2 == 0) && (y % 2 == 0))
 				{
-					/*
-					// Cells where lines meet edges
-					*/
-					attron (COLOR_PAIR (3));
-					if ((y == 0) && (x % 2 == 0) && (x != 0)
-						&& (x != board->width * 2))
-						{
-							mvwaddch (window, y, x, ACS_TTEE);
-						}
-					if ((y == board->height * 2) && (x % 2 == 0) && (x != 0)
-						&& (x != board->width * 2))
-						{
-							mvwaddch (window, y, x, ACS_BTEE);
-						}
-					if ((x == 0) && (y % 2 == 0) && (y != 0)
-						&& (y != board->height * 2))
-						{
-							mvwaddch (window, y, x, ACS_LTEE);
-						}
-					if ((x == board->width * 2) && (y % 2 == 0) && (y != 0)
-						&& (y != board->height * 2))
-						{
-							mvwaddch (window, y, x, ACS_RTEE);
-						}
-
-					if ((y != 0) && (x != 0) && (y != board->height * 2)
-						&& (x != board->width * 2))
-						{
-							int current_idx
-								= coord_to_index (board, y / 2, x / 2);
-							/*
-							// Cells where lines cross
-							*/
-							if ((x % 2 == 0) && (y % 2 == 0))
-								{
-									mvwaddch (window, y, x, ACS_PLUS);
-								}
-							/*
-							// Vertical lines
-							*/
-							if (y % 2 == 1)
-								{
-									mvwaddch (window, y, x, ACS_VLINE);
-								}
-							/*
-							// Horizontal lines
-							*/
-							if (x % 2 == 1)
-								{
-									mvwaddch (window, y, x, ACS_HLINE);
-								}
-							attroff (COLOR_PAIR (3));
-							/*
-							// Every space
-							*/
-							if ((x % 2 == 1) && (y % 2 == 1))
-								{
-									mvwaddch (window, y, x, ' ');
-								}
-
-							/*
-							// Color spaces
-							*/
-							piece = board->cells[current_idx]->piece;
-
-							/*
-							// Color white spaces
-							*/
-							if (((x % 4 == 3) && (y % 4 == 1))
-								|| ((x % 4 == 1) && (y % 4 == 3)))
-								{
-									if ((piece != NULL)
-										&& (piece->color == WHITE))
-										{
-											mvwaddch (window, y, x,
-													  piece->symbol
-														  | COLOR_PAIR (5));
-										}
-									else if ((piece != NULL)
-											 && (piece->color == BLACK))
-										{
-											mvwaddch (window, y, x,
-													  piece->symbol
-														  | COLOR_PAIR (7));
-										}
-									else
-										{
-											mvwaddch (window, y, x,
-													  ' ' | COLOR_PAIR (2));
-										}
-								}
-
-							/*
-							// Color black spaces
-							*/
-							if (((x % 4 == 3) && (y % 4 == 3))
-								|| ((x % 4 == 1) && (y % 4 == 1)))
-								{
-									if ((piece != NULL)
-										&& (piece->color == WHITE))
-										{
-											mvwaddch (window, y, x,
-													  piece->symbol
-														  | COLOR_PAIR (4));
-										}
-									else if ((piece != NULL)
-											 && (piece->color == BLACK))
-										{
-											mvwaddch (window, y, x,
-													  piece->symbol
-														  | COLOR_PAIR (6));
-										}
-									else
-										{
-											mvwaddch (window, y, x,
-													  ' ' | COLOR_PAIR (1));
-										}
-								}
-
-							/*
-							// Draw cursor and selected square
-							*/
-							if ((cursor_y == y / 2) && (cursor_x == x / 2))
-								{
-									mvwchgat (window, cursor_y * 2 + 1,
-											  cursor_x * 2 + 1, 1, A_NORMAL, 8,
-											  NULL);
-								}
-							if (selected != NULL)
-								{
-									if ((selected->y == y / 2)
-										&& selected->x == x / 2)
-										{
-											mvwchgat (window,
-													  selected->y * 2 + 1,
-													  selected->x * 2 + 1, 1,
-													  A_REVERSE, 0, NULL);
-										}
-								}
-						}
+					mvwaddch (window, y, x, ACS_PLUS);
 				}
-		}
-	if (selected != NULL)
-		{
-			int i;
-			for (i = 0; i < selected->moves_count; i++)
+				/*
+				// Vertical lines
+				*/
+				if (y % 2 == 1)
 				{
-					vec2_t moves = selected->moves[i];
-					if ((moves.y == cursor_y) && (moves.x == cursor_x))
-						{
-							mvwchgat (window, moves.y * 2 + 1, moves.x * 2 + 1,
-									  1, A_NORMAL, 8, NULL);
-						}
+					mvwaddch (window, y, x, ACS_VLINE);
+				}
+				/*
+				// Horizontal lines
+				*/
+				if (x % 2 == 1)
+				{
+					mvwaddch (window, y, x, ACS_HLINE);
+				}
+				attroff (COLOR_PAIR (3));
+				/*
+				// Every space
+				*/
+				if ((x % 2 == 1) && (y % 2 == 1))
+				{
+					mvwaddch (window, y, x, ' ');
+				}
+
+				/*
+				// Color spaces
+				*/
+				piece = board->cells[current_idx]->piece;
+
+				/*
+				// Color white spaces
+				*/
+				if (((x % 4 == 3) && (y % 4 == 1))
+					|| ((x % 4 == 1) && (y % 4 == 3)))
+				{
+					if ((piece != NULL) && (piece->color == WHITE))
+					{
+						mvwaddch (window, y, x,
+								  piece->symbol | COLOR_PAIR (5));
+					}
+					else if ((piece != NULL) && (piece->color == BLACK))
+					{
+						mvwaddch (window, y, x,
+								  piece->symbol | COLOR_PAIR (7));
+					}
 					else
-						{
-							mvwchgat (window, moves.y * 2 + 1, moves.x * 2 + 1,
-									  1, A_NORMAL, 9, NULL);
-						}
+					{
+						mvwaddch (window, y, x, ' ' | COLOR_PAIR (2));
+					}
 				}
+
+				/*
+				// Color black spaces
+				*/
+				if (((x % 4 == 3) && (y % 4 == 3))
+					|| ((x % 4 == 1) && (y % 4 == 1)))
+				{
+					if ((piece != NULL) && (piece->color == WHITE))
+					{
+						mvwaddch (window, y, x,
+								  piece->symbol | COLOR_PAIR (4));
+					}
+					else if ((piece != NULL) && (piece->color == BLACK))
+					{
+						mvwaddch (window, y, x,
+								  piece->symbol | COLOR_PAIR (6));
+					}
+					else
+					{
+						mvwaddch (window, y, x, ' ' | COLOR_PAIR (1));
+					}
+				}
+
+				/*
+				// Draw cursor and selected square
+				*/
+				if ((cursor_y == y / 2) && (cursor_x == x / 2))
+				{
+					mvwchgat (window, cursor_y * 2 + 1, cursor_x * 2 + 1, 1,
+							  A_NORMAL, 8, NULL);
+				}
+				if (selected != NULL)
+				{
+					if ((selected->y == y / 2) && selected->x == x / 2)
+					{
+						mvwchgat (window, selected->y * 2 + 1,
+								  selected->x * 2 + 1, 1, A_REVERSE, 0, NULL);
+					}
+				}
+			}
 		}
+	}
+	if (selected != NULL)
+	{
+		int i;
+		for (i = 0; i < selected->moves_count; i++)
+		{
+			vec2_t moves = selected->moves[i];
+			if ((moves.y == cursor_y) && (moves.x == cursor_x))
+			{
+				mvwchgat (window, moves.y * 2 + 1, moves.x * 2 + 1, 1,
+						  A_NORMAL, 8, NULL);
+			}
+			else
+			{
+				mvwchgat (window, moves.y * 2 + 1, moves.x * 2 + 1, 1,
+						  A_NORMAL, 9, NULL);
+			}
+		}
+	}
 }

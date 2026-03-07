@@ -24,9 +24,9 @@ free_piece (board_t *board, piece_t **pieces)
 {
 	int i;
 	for (i = 0; i < board->width * 2; i++)
-		{
-			free (pieces[i]);
-		}
+	{
+		free (pieces[i]);
+	}
 	free (pieces);
 }
 
@@ -42,61 +42,61 @@ piece_to_string (piece_t *piece)
 {
 	char *piece_string;
 	if (piece != NULL)
+	{
+		switch (piece->color)
 		{
-			switch (piece->color)
-				{
-				case WHITE:
-					switch (piece->kind)
-						{
-						case PAWN:
-							piece_string = "White Pawn";
-							break;
-						case KNIGHT:
-							piece_string = "White Knight";
-							break;
-						case BISHOP:
-							piece_string = "White Bishop";
-							break;
-						case ROOK:
-							piece_string = "White Rook";
-							break;
-						case QUEEN:
-							piece_string = "White Queen";
-							break;
-						case KING:
-							piece_string = "White King";
-							break;
-						}
-					break;
-				case BLACK:
-					switch (piece->kind)
-						{
-						case PAWN:
-							piece_string = "Black Pawn";
-							break;
-						case KNIGHT:
-							piece_string = "Black Knight";
-							break;
-						case BISHOP:
-							piece_string = "Black Bishop";
-							break;
-						case ROOK:
-							piece_string = "Black Rook";
-							break;
-						case QUEEN:
-							piece_string = "Black Queen";
-							break;
-						case KING:
-							piece_string = "Black King";
-							break;
-							break;
-						}
-				}
+		case WHITE:
+			switch (piece->kind)
+			{
+			case PAWN:
+				piece_string = "White Pawn";
+				break;
+			case KNIGHT:
+				piece_string = "White Knight";
+				break;
+			case BISHOP:
+				piece_string = "White Bishop";
+				break;
+			case ROOK:
+				piece_string = "White Rook";
+				break;
+			case QUEEN:
+				piece_string = "White Queen";
+				break;
+			case KING:
+				piece_string = "White King";
+				break;
+			}
+			break;
+		case BLACK:
+			switch (piece->kind)
+			{
+			case PAWN:
+				piece_string = "Black Pawn";
+				break;
+			case KNIGHT:
+				piece_string = "Black Knight";
+				break;
+			case BISHOP:
+				piece_string = "Black Bishop";
+				break;
+			case ROOK:
+				piece_string = "Black Rook";
+				break;
+			case QUEEN:
+				piece_string = "Black Queen";
+				break;
+			case KING:
+				piece_string = "Black King";
+				break;
+				break;
+			}
 		}
+	}
 	else
-		{
-			piece_string = "             ";
-		}
+	{
+		piece_string = "             ";
+	}
 	return piece_string;
 }
 char *
@@ -105,9 +105,9 @@ piece_arr_to_string (piece_t **pieces, int count)
 	char *str = calloc (count + 1, sizeof (char));
 	int i;
 	for (i = 0; i < count; i++)
-		{
-			str[i] = pieces[i]->symbol;
-		}
+	{
+		str[i] = pieces[i]->symbol;
+	}
 	str[i++] = '\0';
 	return str;
 }
@@ -120,10 +120,10 @@ init_white_pieces_classic (board_t *board, piece_t **pieces)
 	*/
 	int i;
 	for (i = 0; i < board->width; i++)
-		{
-			piece_t *pawn = new_piece (PAWN, WHITE, 6, i);
-			pieces[i] = pawn;
-		}
+	{
+		piece_t *pawn = new_piece (PAWN, WHITE, 6, i);
+		pieces[i] = pawn;
+	}
 	/*
 	// Initialize knights
 	*/
@@ -148,9 +148,9 @@ init_black_pieces_classic (board_t *board, piece_t **pieces)
 	*/
 	int i;
 	for (i = 0; i < board->width; i++)
-		{
-			pieces[i] = new_piece (PAWN, BLACK, 1, i);
-		}
+	{
+		pieces[i] = new_piece (PAWN, BLACK, 1, i);
+	}
 	/*
 	// Initialize knights
 	*/

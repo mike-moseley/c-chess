@@ -35,18 +35,18 @@ main (void)
 	ESCDELAY = 10;
 
 	if (has_colors () == FALSE)
-		{
-			endwin ();
-			printf ("Your terminal doesn't support colors.");
-			return 1;
-		}
+	{
+		endwin ();
+		printf ("Your terminal doesn't support colors.");
+		return 1;
+	}
 
 	if (COLORS < 16)
-		{
-			endwin ();
-			printf ("Your terminal doesn't support at least 16 colors.");
-			return 1;
-		}
+	{
+		endwin ();
+		printf ("Your terminal doesn't support at least 16 colors.");
+		return 1;
+	}
 
 	/*
 	// White space
@@ -93,181 +93,171 @@ main (void)
 	*/
 	refresh ();
 	while ((ch = getch ()) != 'q')
+	{
+		if (turn == WHITE)
 		{
-			if (turn == WHITE)
+			mvwprintw (stdscr, 18, 0, "Turn: White");
+		}
+		else
+		{
+			mvwprintw (stdscr, 0, 0, "Turn: Black");
+		}
+		switch (ch)
+		{
+		case KEY_UP:
+		case 'k':
+			tmp_y = cursor_y - 1;
+			if (check_bounds (board, tmp_y, cursor_x))
+			{
+				if (selected != NULL)
 				{
-					mvwprintw (stdscr, 18, 0, "Turn: White");
+					/*
+					// TODO: Replace with distance function
+					inside get_closest_move... fns
+					// to get better movement?
+					*/
+					vec2_t closest
+						= get_closest_move_up (selected, cursor_y, cursor_x);
+					cursor_x = closest.x;
+					cursor_y = closest.y;
 				}
-			else
+				else
 				{
-					mvwprintw (stdscr, 0, 0, "Turn: Black");
+					cursor_y = tmp_y;
 				}
-			switch (ch)
+			}
+			break;
+		case KEY_DOWN:
+		case 'j':
+			tmp_y = cursor_y + 1;
+			if (check_bounds (board, tmp_y, cursor_x))
+			{
+				if (selected != NULL)
 				{
-				case KEY_UP:
-				case 'k':
-					tmp_y = cursor_y - 1;
-					if (check_bounds (board, tmp_y, cursor_x))
-						{
-							if (selected != NULL)
-								{
-									/*
-									// TODO: Replace with distance function
-									inside get_closest_move... fns
-									// to get better movement?
-									*/
-									vec2_t closest = get_closest_move_up (
-										selected, cursor_y, cursor_x);
-									cursor_x = closest.x;
-									cursor_y = closest.y;
-								}
-							else
-								{
-									cursor_y = tmp_y;
-								}
-						}
-					break;
-				case KEY_DOWN:
-				case 'j':
-					tmp_y = cursor_y + 1;
-					if (check_bounds (board, tmp_y, cursor_x))
-						{
-							if (selected != NULL)
-								{
-									vec2_t closest = get_closest_move_down (
-										selected, cursor_y, cursor_x);
-									cursor_x = closest.x;
-									cursor_y = closest.y;
-								}
-							else
-								{
-									cursor_y = tmp_y;
-								}
-						}
-					break;
-				case KEY_LEFT:
-				case 'h':
-					tmp_x = cursor_x - 1;
-					if (check_bounds (board, cursor_y, tmp_x))
-						{
-							if (selected != NULL)
-								{
-									vec2_t closest = get_closest_move_left (
-										selected, cursor_y, cursor_x);
-									cursor_x = closest.x;
-									cursor_y = closest.y;
-								}
-							else
-								{
-									cursor_x = tmp_x;
-								}
-						}
-					break;
-				case KEY_RIGHT:
-				case 'l':
-					tmp_x = cursor_x + 1;
-					if (check_bounds (board, cursor_y, tmp_x))
-						{
-							if (selected != NULL)
-								{
-									vec2_t closest = get_closest_move_right (
-										selected, cursor_y, cursor_x);
-									cursor_x = closest.x;
-									cursor_y = closest.y;
-								}
-							else
-								{
-									cursor_x = tmp_x;
-								}
-						}
-					break;
+					vec2_t closest
+						= get_closest_move_down (selected, cursor_y, cursor_x);
+					cursor_x = closest.x;
+					cursor_y = closest.y;
+				}
+				else
+				{
+					cursor_y = tmp_y;
+				}
+			}
+			break;
+		case KEY_LEFT:
+		case 'h':
+			tmp_x = cursor_x - 1;
+			if (check_bounds (board, cursor_y, tmp_x))
+			{
+				if (selected != NULL)
+				{
+					vec2_t closest
+						= get_closest_move_left (selected, cursor_y, cursor_x);
+					cursor_x = closest.x;
+					cursor_y = closest.y;
+				}
+				else
+				{
+					cursor_x = tmp_x;
+				}
+			}
+			break;
+		case KEY_RIGHT:
+		case 'l':
+			tmp_x = cursor_x + 1;
+			if (check_bounds (board, cursor_y, tmp_x))
+			{
+				if (selected != NULL)
+				{
+					vec2_t closest = get_closest_move_right (
+						selected, cursor_y, cursor_x);
+					cursor_x = closest.x;
+					cursor_y = closest.y;
+				}
+				else
+				{
+					cursor_x = tmp_x;
+				}
+			}
+			break;
 
-				case '\n':
+		case '\n':
+		{
+			int idx = coord_to_index (board, cursor_y, cursor_x);
+			if (selected == NULL)
+			{
+				piece_t *candidate = board->cells[idx]->piece;
+				if (candidate != NULL && candidate->color == turn)
+				{
+					selected = candidate;
+					compute_moves (board, selected);
+				}
+			}
+			else
+			{
+				if (board->cells[idx]->moveable == 1)
+				{
+					int selected_y = selected->y;
+					int selected_x = selected->x;
+					int selected_idx
+						= coord_to_index (board, selected_y, selected_x);
+					/*
+					// TODO: Implement capture if
+					board->cells[idx]->piece != NULL
+					// if (board->cells[idx]->piece !=
+					NULL){
+					// }
+					*/
+					if (board->cells[idx]->piece != NULL)
 					{
-						int idx = coord_to_index (board, cursor_y, cursor_x);
-						if (selected == NULL)
-							{
-								piece_t *candidate = board->cells[idx]->piece;
-								if (candidate != NULL
-									&& candidate->color == turn)
-									{
-										selected = candidate;
-										compute_moves (board, selected);
-									}
-							}
+						if (board->cells[idx]->piece->color != WHITE)
+						{
+							white_captures[white_capture_count]
+								= board->cells[idx]->piece;
+							white_capture_count++;
+						}
 						else
-							{
-								if (board->cells[idx]->moveable == 1)
-									{
-										int selected_y = selected->y;
-										int selected_x = selected->x;
-										int selected_idx = coord_to_index (
-											board, selected_y, selected_x);
-										/*
-										// TODO: Implement capture if
-										board->cells[idx]->piece != NULL
-										// if (board->cells[idx]->piece !=
-										NULL){
-										// }
-										*/
-										if (board->cells[idx]->piece != NULL)
-											{
-												if (board->cells[idx]
-														->piece->color
-													!= WHITE)
-													{
-														white_captures
-															[white_capture_count]
-															= board->cells[idx]
-																  ->piece;
-														white_capture_count++;
-													}
-												else
-													{
-														black_captures
-															[black_capture_count]
-															= board->cells[idx]
-																  ->piece;
-														black_capture_count++;
-													}
-											}
-										board->cells[idx]->piece = selected;
-										board->cells[idx]->piece->y = cursor_y;
-										board->cells[idx]->piece->x = cursor_x;
-										board->cells[selected_idx]->piece
-											= NULL;
-										selected = NULL;
-										clear_board_moveable (board);
-										if (turn == WHITE)
-											{
-												turn = BLACK;
-											}
-										else
-											{
-												turn = WHITE;
-											}
-									}
-							}
-						break;
+						{
+							black_captures[black_capture_count]
+								= board->cells[idx]->piece;
+							black_capture_count++;
+						}
 					}
-				case 27:
+					board->cells[idx]->piece = selected;
+					board->cells[idx]->piece->y = cursor_y;
+					board->cells[idx]->piece->x = cursor_x;
+					board->cells[selected_idx]->piece = NULL;
 					selected = NULL;
 					clear_board_moveable (board);
-					break;
+					if (turn == WHITE)
+					{
+						turn = BLACK;
+					}
+					else
+					{
+						turn = WHITE;
+					}
 				}
-
-			draw_board (stdscr, board, cursor_y, cursor_x, selected);
-
-			mvwprintw (
-				stdscr, 19, 0, "White Captures: %s",
-				piece_arr_to_string (white_captures, white_capture_count));
-			mvwprintw (
-				stdscr, 20, 0, "Black Captures: %s",
-				piece_arr_to_string (black_captures, black_capture_count));
-			mvwprintw (stdscr, 22, 0, "Selected: %s     ",
-					   piece_to_string (selected));
-			refresh ();
+			}
+			break;
 		}
+		case 27:
+			selected = NULL;
+			clear_board_moveable (board);
+			break;
+		}
+
+		draw_board (stdscr, board, cursor_y, cursor_x, selected);
+
+		mvwprintw (stdscr, 19, 0, "White Captures: %s",
+				   piece_arr_to_string (white_captures, white_capture_count));
+		mvwprintw (stdscr, 20, 0, "Black Captures: %s",
+				   piece_arr_to_string (black_captures, black_capture_count));
+		mvwprintw (stdscr, 22, 0, "Selected: %s     ",
+				   piece_to_string (selected));
+		refresh ();
+	}
 	endwin ();
 
 	free_board (board);

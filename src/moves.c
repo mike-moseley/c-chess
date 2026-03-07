@@ -260,7 +260,8 @@ compute_moves (struct Board *board, struct Piece *piece)
 				capture1_idx = coord_to_index (board, capture1.y, capture1.x);
 				capture1_cell = board->cells[capture1_idx];
 
-				if ((capture1_cell->piece != NULL) && (capture1_cell->piece->color != piece->color))
+				if ((capture1_cell->piece != NULL)
+					&& (capture1_cell->piece->color != piece->color))
 				{
 
 					result[piece->moves_count] = capture1;
@@ -273,7 +274,8 @@ compute_moves (struct Board *board, struct Piece *piece)
 			{
 				capture2_idx = coord_to_index (board, capture2.y, capture2.x);
 				capture2_cell = board->cells[capture2_idx];
-				if ((capture2_cell->piece != NULL) && (capture2_cell->piece->color != piece->color))
+				if ((capture2_cell->piece != NULL)
+					&& (capture2_cell->piece->color != piece->color))
 				{
 					result[piece->moves_count] = capture2;
 					board->cells[capture2_idx]->moveable = 1;
