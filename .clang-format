@@ -1,4 +1,7 @@
 BasedOnStyle: GNU
 UseTab: Always
+BreakBeforeBraces: Allman
+# AlignAfterOpenBracket: Align
 IndentWidth: 4
 TabWidth: 4
+# ContinuationIndentWidth: 0
