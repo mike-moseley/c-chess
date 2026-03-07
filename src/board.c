@@ -7,8 +7,8 @@
 
 int BOARD_BG_WHITE = -1;
 int BOARD_BG_BLACK = 3;
-int WHITE_COLOR = 12;
-int BLACK_COLOR = 4;
+int WHITE_COLOR = 4;
+int BLACK_COLOR = 12;
 int LINE_COLOR = 8;
 
 board_t *

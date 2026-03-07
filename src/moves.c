@@ -285,6 +285,85 @@ compute_moves (struct Board *board, struct Piece *piece)
 		}
 		if (piece->color == BLACK)
 		{
+			vec2_t move1;
+			int move1_idx;
+			cell_t *move1_cell;
+			vec2_t move2;
+			int move2_idx;
+			cell_t *move2_cell;
+
+			vec2_t capture1;
+			int capture1_idx;
+			cell_t *capture1_cell;
+			vec2_t capture2;
+			int capture2_idx;
+			cell_t *capture2_cell;
+
+			move1.y = piece->y + 1;
+			move1.x = piece->x;
+			move2.y = piece->y + 2;
+			move2.x = piece->x;
+
+			capture1.y = piece->y + 1;
+			capture1.x = piece->x - 1;
+			capture2.y = piece->y + 1;
+			capture2.x = piece->x + 1;
+
+			if (check_bounds (board, move1.y, move1.x))
+			{
+				move1_idx = coord_to_index (board, move1.y, move1.x);
+				move1_cell = board->cells[move1_idx];
+				if (move1_cell->piece == NULL)
+				{
+					result[piece->moves_count] = move1;
+					piece->moves_count++;
+					board->cells[move1_idx]->moveable = 1;
+
+					if (piece->y == 1)
+					{
+						if (check_bounds (board, move2.y, move2.x))
+						{
+							move2_idx
+								= coord_to_index (board, move2.y, move2.x);
+							move2_cell = board->cells[move2_idx];
+							if (move2_cell->piece == NULL)
+							{
+
+								result[piece->moves_count] = move2;
+								board->cells[move2_idx]->moveable = 1;
+								piece->moves_count++;
+							}
+						}
+					}
+				}
+			}
+			if (check_bounds (board, capture1.y, capture1.x))
+			{
+				capture1_idx = coord_to_index (board, capture1.y, capture1.x);
+				capture1_cell = board->cells[capture1_idx];
+
+				if ((capture1_cell->piece != NULL)
+					&& (capture1_cell->piece->color != piece->color))
+				{
+
+					result[piece->moves_count] = capture1;
+					board->cells[capture1_idx]->moveable = 1;
+					piece->moves_count++;
+				}
+			}
+
+			if (check_bounds (board, capture2.y, capture2.x))
+			{
+				capture2_idx = coord_to_index (board, capture2.y, capture2.x);
+				capture2_cell = board->cells[capture2_idx];
+				if ((capture2_cell->piece != NULL)
+					&& (capture2_cell->piece->color != piece->color))
+				{
+					result[piece->moves_count] = capture2;
+					board->cells[capture2_idx]->moveable = 1;
+					piece->moves_count++;
+				}
+			}
 		}
 
 		break;

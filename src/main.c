@@ -91,17 +91,10 @@ main (void)
 	// Make it so moving the cursor after selecting a piece only cycles
 	// over moveable
 	*/
+	ch = 0;
 	refresh ();
-	while ((ch = getch ()) != 'q')
+	do
 	{
-		if (turn == WHITE)
-		{
-			mvwprintw (stdscr, 18, 0, "Turn: White");
-		}
-		else
-		{
-			mvwprintw (stdscr, 0, 0, "Turn: Black");
-		}
 		switch (ch)
 		{
 		case KEY_UP:
@@ -202,13 +195,6 @@ main (void)
 					int selected_x = selected->x;
 					int selected_idx
 						= coord_to_index (board, selected_y, selected_x);
-					/*
-					// TODO: Implement capture if
-					board->cells[idx]->piece != NULL
-					// if (board->cells[idx]->piece !=
-					NULL){
-					// }
-					*/
 					if (board->cells[idx]->piece != NULL)
 					{
 						if (board->cells[idx]->piece->color != WHITE)
@@ -248,16 +234,23 @@ main (void)
 			break;
 		}
 
-		draw_board (stdscr, board, cursor_y, cursor_x, selected);
-
 		mvwprintw (stdscr, 19, 0, "White Captures: %s",
 				   piece_arr_to_string (white_captures, white_capture_count));
 		mvwprintw (stdscr, 20, 0, "Black Captures: %s",
 				   piece_arr_to_string (black_captures, black_capture_count));
 		mvwprintw (stdscr, 22, 0, "Selected: %s     ",
 				   piece_to_string (selected));
+		if (turn == WHITE)
+		{
+			mvwprintw (stdscr, 18, 0, "Turn: White");
+		}
+		else
+		{
+			mvwprintw (stdscr, 18, 0, "Turn: Black");
+		}
+		draw_board (stdscr, board, cursor_y, cursor_x, selected);
 		refresh ();
-	}
+	} while  ((ch = getch ()) != 'q');
 	endwin ();
 
 	free_board (board);
